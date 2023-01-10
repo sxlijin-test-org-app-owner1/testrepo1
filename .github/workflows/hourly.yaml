@@ -1,0 +1,34 @@
+name: Hourly
+on:
+  schedule:
+    # No need to run literally every hour, adjust as desired:
+    #   Mon-Fri → 8am, 11am, 1pm, 3pm, 6pm PST
+    #   Sat-Sun → 12pm PST
+    - cron: 0 16,19,21,23 * * 1-5
+    - cron: 0 2 * * 2-6
+    - cron: 0 20 * * 6,0
+  workflow_dispatch: {}
+
+jobs:
+  hourly_integration_tests:
+    name: Hourly integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Run hourly integration tests
+        run: echo "Running hourly integration tests... Done!"
+
+      - name: Notify slack
+        uses: slackapi/slack-github-action@v1
+        if: ${{ failure() }}
+        with:
+          channel-id: ci-notifications
+          slack-message: |
+            ⚠️ <${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}|'Hourly integration tests'> failed (<${{ github.event.repository.html_url }}/actions/workflows/hourly.yaml|history>)
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

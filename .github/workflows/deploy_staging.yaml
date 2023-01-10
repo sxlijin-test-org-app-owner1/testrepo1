@@ -1,0 +1,22 @@
+name: Deploy (staging)
+on:
+  push:
+    branches: [main]
+    paths:
+      - a/**
+  workflow_dispatch: {}
+concurrency: ${{ github.workflow }}
+
+jobs:
+  deploy:
+    name: Deploy staging
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Deploy
+        run: echo "Deploying... Done!"

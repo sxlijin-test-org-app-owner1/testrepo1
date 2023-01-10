@@ -1,0 +1,8 @@
+version: 0.1
+cli:
+  version: 0.10.2-beta
+lint:
+  enabled:
+    - actionlint@1.6.12
+    - gitleaks@8.8.2
+    - prettier@2.6.2

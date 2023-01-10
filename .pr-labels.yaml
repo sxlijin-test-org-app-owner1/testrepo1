@@ -1,0 +1,6 @@
+🧶 repo configs:
+  - .*
+  - .trunk/**
+
+🚥 ci:
+  - .github/**

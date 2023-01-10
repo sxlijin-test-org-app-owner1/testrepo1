@@ -1,0 +1,49 @@
+name: Nightly
+on:
+  schedule:
+    # Midnight PST
+    - cron: 0 8 * * *
+  workflow_dispatch: {}
+
+jobs:
+  stale:
+    name: Close stale PRs and issues
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/stale@v4
+        with:
+          stale-issue-message: >
+            This issue is stale because it has been idle for 60 days. Remove the 'stale' label to
+            prevent it from being auto-closed in 7 days.
+          stale-pr-message: >
+            This PR is stale because it has been idle for 60 days. Remove the 'stale' label to
+            prevent it from being auto-closed in 7 days.
+          close-issue-message: >
+            This issue was closed because it has had no activity for 60 days plus a 7 day grace
+            period.
+          close-pr-message: >
+            This PR was closed because it has had no activity for 60 days plus a 7 day grace period.
+
+  nightly_integration_tests:
+    name: Nightly integration tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Run nightly integration tests
+        run: echo "Running nightly integration tests... Done!"
+
+      - name: Notify slack
+        uses: slackapi/slack-github-action@v1
+        if: ${{ failure() }}
+        with:
+          channel-id: ci-notifications
+          slack-message: |
+            ⚠️ <${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}|'Nightly integration tests'> failed (<${{ github.event.repository.html_url }}/actions/workflows/nightly.yaml|history>)
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

@@ -1,0 +1,17 @@
+name: Deploy (prod)
+on: workflow_dispatch
+concurrency: ${{ github.workflow }}
+
+jobs:
+  deploy:
+    name: Deploy prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Deploy
+        run: echo "Deploying... Done!"
