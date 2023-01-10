@@ -1,0 +1,6 @@
+on:
+  push: {}
+
+jobs:
+  trunk-check:
+    uses: sxlijin-test-org1/.trunk/.github/workflows/reusable.yaml@main
